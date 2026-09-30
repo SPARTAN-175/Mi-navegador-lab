@@ -1,0 +1,21 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="8dp" android:gravity="center_vertical">
+        <EditText android:id="@+id/urlInput" android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1" android:singleLine="true" android:hint="https://tu-pwa.com" android:inputType="textUri" />
+        <Button android:id="@+id/goButton" android:layout_width="wrap_content" android:layout_height="48dp" android:text="IR" />
+    </LinearLayout>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingHorizontal="6dp">
+        <Button android:id="@+id/backButton" android:layout_width="0dp" android:layout_height="44dp" android:layout_weight="1" android:text="‹" />
+        <Button android:id="@+id/forwardButton" android:layout_width="0dp" android:layout_height="44dp" android:layout_weight="1" android:text="›" />
+        <Button android:id="@+id/reloadButton" android:layout_width="0dp" android:layout_height="44dp" android:layout_weight="1" android:text="↻" />
+        <Button android:id="@+id/homeButton" android:layout_width="0dp" android:layout_height="44dp" android:layout_weight="1" android:text="⌂" />
+    </LinearLayout>
+    <WebView android:id="@+id/webView" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" />
+    <HorizontalScrollView android:layout_width="match_parent" android:layout_height="56dp">
+      <LinearLayout android:layout_width="wrap_content" android:layout_height="match_parent">
+        <Button android:id="@+id/sitesButton" android:layout_width="wrap_content" android:layout_height="match_parent" android:text="🔗 Sitios" />
+        <Button android:id="@+id/consoleButton" android:layout_width="wrap_content" android:layout_height="match_parent" android:text="🔧 Consola" />
+        <Button android:id="@+id/gpsButton" android:layout_width="wrap_content" android:layout_height="match_parent" android:text="📍 GPS" />
+        <Button android:id="@+id/dataButton" android:layout_width="wrap_content" android:layout_height="match_parent" android:text="🧹 Datos" />
+      </LinearLayout>
+    </HorizontalScrollView>
+</LinearLayout>
