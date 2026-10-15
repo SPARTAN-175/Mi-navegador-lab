@@ -1,0 +1,53 @@
+// REGLAS ADICIONALES — NO reemplaces todas las reglas de CAHESA.
+// Inserta estos match dentro de tu bloque existente:
+// match /databases/{database}/documents { ... }
+// Cambia ADMIN_UID_AQUI por el UID real de la cuenta administradora.
+
+function isTuMundoAdmin() {
+  return request.auth != null && request.auth.uid == 'ADMIN_UID_AQUI';
+}
+
+match /appStore_apps/{appId} {
+  allow read: if resource.data.published == true || isTuMundoAdmin();
+  allow create, delete: if isTuMundoAdmin();
+  allow update: if isTuMundoAdmin()
+    || (request.auth != null
+      && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['downloads'])
+      && request.resource.data.downloads == resource.data.downloads + 1
+      && resource.data.published == true)
+    || (request.auth != null
+      && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['ratingSum', 'ratingCount'])
+      && request.resource.data.ratingCount == resource.data.ratingCount + 1
+      && request.resource.data.ratingSum >= resource.data.ratingSum + 1
+      && request.resource.data.ratingSum <= resource.data.ratingSum + 5
+      && existsAfter(/databases/$(database)/documents/appStore_reviews/$(appId + '_' + request.auth.uid))
+      && getAfter(/databases/$(database)/documents/appStore_reviews/$(appId + '_' + request.auth.uid)).data.appId == appId);
+}
+
+match /appStore_reviews/{reviewId} {
+  allow read: if resource.data.status == 'published' || isTuMundoAdmin();
+  allow create: if request.auth != null
+    && request.resource.data.uid == request.auth.uid
+    && request.resource.data.appId is string
+    && request.resource.data.name is string
+    && request.resource.data.name.size() <= 50
+    && request.resource.data.comment is string
+    && request.resource.data.comment.size() >= 3
+    && request.resource.data.comment.size() <= 1200
+    && request.resource.data.rating is int
+    && request.resource.data.rating >= 1
+    && request.resource.data.rating <= 5
+    && request.resource.data.status == 'published'
+    && exists(/databases/$(database)/documents/appStore_apps/$(request.resource.data.appId))
+    && get(/databases/$(database)/documents/appStore_apps/$(request.resource.data.appId)).data.published == true;
+  allow update, delete: if isTuMundoAdmin();
+}
+
+match /appStore_downloadEvents/{eventId} {
+  allow create: if request.auth != null
+    && request.resource.data.appId is string
+    && request.resource.data.slug is string
+    && request.resource.data.source == 'app_detail';
+  allow read: if isTuMundoAdmin();
+  allow update, delete: if false;
+}

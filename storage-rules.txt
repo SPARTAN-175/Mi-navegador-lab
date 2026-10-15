@@ -1,0 +1,12 @@
+// REGLA ADICIONAL — NO reemplaces todas las reglas de Storage de CAHESA.
+// Inserta este match dentro del bloque existente `service firebase.storage { match /b/{bucket}/o { ... } }`.
+// Cambia ADMIN_UID_AQUI por el UID real de la cuenta administradora.
+function isTuMundoAdmin() {
+  return request.auth != null && request.auth.uid == 'ADMIN_UID_AQUI';
+}
+match /appStore/{appId}/{allPaths=**} {
+  allow read: if true;
+  allow write: if isTuMundoAdmin()
+    && request.resource != null
+    && request.resource.size < 200 * 1024 * 1024;
+}
